@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en"> <!--opening html -->
+  <head> <!-- start of head -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Sleep Logger</title> <!-- page title -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script> <!-- adding chart.js library -->
+     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> <!-- adding bootstrap css library -->
+    <link rel="stylesheet" type="text/css" href="styles.css"> <!-- adding css file -->
+
+  </head> <!-- end of head -->
+  <body> <!-- start of body -->
+    <main> <!-- opening main -->
+    <h1>Sleep Logger</h1> <!-- page heading -->
+    <p><label for="sleep">How many hours of sleep did you get last night?</label> <br> <!-- text for range slider 1 -->
+    <input type="range" id="sleep" min="1" max="10" value="1" oninput="sliderChange(this.value)"> <!-- setting up input values for slider 1 -->
+    <output id="sliderVal"> </output> <br> <!-- output for slider 1 -->
+
+<p><label for="sleep">How tired did you feel throughout the next day?</label> <br> <!-- text for range slider 2 -->
+    <input type="range" id="tiredness" min="1" max="10" value="1" oninput="sliderChange2(this.value)"> <!-- input values for slider 2-->
+    <output id="sliderVal2"> </output> <br> <!-- output for slider 2 -->
+  </p>
+
+    <p>
+    <button id="submit">GO!</button> <!-- adding submit button with 'GO!' as label -->
+    </p>
+
+    <p>
+    <canvas id="chart">00"></canvas> <!-- creating chart canvas-->
+  </p>
+</main> <!-- closing main -->
+
+    <script> // opening javascript
+      function sliderChange(val) { //creating slider funtion
+          document.getElementById('sliderVal').innerHTML = val; //getting slider via id established at the start
+      }
+
+       function sliderChange2(val) { //creating slider function
+          document.getElementById('sliderVal2').innerHTML = val; // getting slider via id established at the start
+      }
+
+
+      async function chartIt() { // creating chartIt function
+
+        let xVals = [];
+        let yVals = [];  // setting variables for the axes
+        let yVals2 = [];
+
+        const repsonse = await fetch('/api');
+        const data = await repsonse.json();
+        console.log(data); // logs data on your browsers console
+        
+
+        for (let i = 0; i < data.length; i++){
+        xVals[i] = new Date(data[i].timestamp).toLocaleString(); // making x axis timestamp
+        yVals[i] = data[i].sleep;      // making y axis sleeo and tiredness
+        yVals2[i] = data[i].tiredness 
+
+        }
+
+        const ctx = document.getElementById('chart').getContext('2d');
+        const myChart = new Chart(ctx, {
+            type: 'line', // type of chart
+            data: {
+                labels: xVals,
+                datasets: [{
+                    label: 'Hours slept per night',
+                    data: yVals,
+                    fill: false,
+                    backgroundColor: 'rgba(51, 204, 51, 0.4)',  // setting line value, width, colour and labels for chart
+                    borderColor: 'rgba(51, 204, 51, 1)',
+                    borderWidth: 5}, {
+                      label: 'Tiredness',
+                      data: yVals2,
+                      fill: false,
+                      backgroundColor: 'rgba(255, 0, 0, 1)',
+                      borderColor: 'rgba(255, 0, 0, 1',
+                      borderWidth: 5
+                    }]
+                
+            }
+        });
+      }
+      const buttonSubmit = document.getElementById('submit'); //creates submit button via id at the top of page
+
+  buttonSubmit.addEventListener('click', async event => { // sers up event listener for data values
+        const tiredness = document.getElementById('tiredness').value; //connects 'tiredness' value to submit button
+         const sleep = document.getElementById('sleep').value; // same as above line for 'sleep'
+        
+        const data = {tiredness,sleep};
+        const options = {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json' // posts data from database through node back to webpage
+          },
+          body: JSON.stringify(data)
+        };
+        const response = await fetch('/api', options);
+        const json = await response.json();  // awaits all info from database before posting to chart at end
+        console.log(json);
+        chartIt();      
+        });
+
+ chartIt(); // allows chart to be visible as soon as page loads rather than only after data is submitted
+        
+     
+
+    </script> <!-- closing javascript -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script> <!-- adding bootstrap-->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  </body> <!-- end of body -->
+</html> <!-- closing html -->

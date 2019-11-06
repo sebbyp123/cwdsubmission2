@@ -1,0 +1,61 @@
+main{
+margin: 2em; /* adding margin to main*/
+}
+
+[id=submit] {
+	margin-top: 10px; /* adding margin to submit button*/
+}
+
+input[type=range] {
+	-webkit-appearance: none;
+	width: calc(50% - 15px);
+	position: relative;
+	top: 0.1px;
+}
+
+
+input[type=range]:focus {
+	outline: none;
+}
+
+input[type=range][id=tiredness]::-webkit-slider-thumb { 
+	-webkit-appearance: none;
+	border: 1px solid #777;
+	height: 44px;
+	width: 18px;
+	border-radius: 5px;
+	background: #D8F2F1;
+	background: -moz-linear-gradient(top, #fefefe, #D8F2F1);    /* adding styling for slider 1*/
+	background: -webkit-linear-gradient(top, #fefefe, #D8F2F1); 
+	cursor: pointer;
+	margin-top: -19px; 
+	box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5); 
+}
+
+input[type=range][id=sleep]::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	border: 1px solid #777;
+	height: 44px;
+	width: 18px;
+	border-radius: 5px;
+	background: #D8F2F1;
+	background: -moz-linear-gradient(top, #fefefe, #D8F2F1);
+	background: -webkit-linear-gradient(top, #fefefe, #D8F2F1); /* adding styling for slider 2*/
+	cursor: pointer;
+	margin-top: -19px; 
+	box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5); 
+}
+
+input[type=range][id=sleep]::-webkit-slider-runnable-track {
+	width: 100%;
+	height: 3px;
+	cursor: pointer;     /* adding styling for track 1*/
+	background: #33cc33;
+}
+
+input[type=range][id=tiredness]::-webkit-slider-runnable-track {
+	width: 100%;
+	height: 3px;
+	cursor: pointer; /* adding styling for track 2*/
+	background: red;
+}
